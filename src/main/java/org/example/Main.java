@@ -69,6 +69,7 @@ public class Main extends JFrame {
     private JButton btnGetCountByRes;
     private JButton btnGetCountByMan;
     private JButton btnGetLaptopsByFeatures;
+    private JButton btnSaveToXml;
     private JLabel resultMan;
     private JLabel resultRes;
     private JLabel labelFirstArea;
@@ -119,31 +120,33 @@ public class Main extends JFrame {
         String f5 = graphicCard.getSelectedItem().toString();
 
         Laptop[] arr =  laptopsInterface.getLaptopListByFeatures(f1,f2,f3,f4,f5);
+        System.out.println(arr.length);
 
         tableModel.setRowCount(0);
-        for(Laptop l : arr){
-            Vector<String> e = new Vector();
-            e.add(l.getManufacturer());
-            e.add(l.getScreenSize());
-            e.add(l.getResolution());
-            e.add(l.getScreenType());
-            e.add(l.getScreenTouchscreen());
-            e.add(l.getProcessorName());
-            e.add(l.getProcessorPhysicalCores().toString());
-            e.add(l.getProcessorSpeed());
-            e.add(l.getRam());
-            e.add(l.getDiscStorage());
-            e.add(l.getDiscType());
-            e.add(l.getGraphicCardName());
-            e.add(l.getGraphicCardMemory());
-            e.add(l.getOs());
-            e.add(l.getDiscReader());
+        for(int i = 0; i < arr.length; i++){
+            System.out.println("Petla:" + arr[i].toString());
+            Vector<String> e = new Vector<String>();
+            e.add(arr[i].getManufacturer());
+            e.add(arr[i].getScreenSize());
+            e.add(arr[i].getResolution());
+            e.add(arr[i].getScreenType());
+            e.add(arr[i].getScreenTouchscreen());
+            e.add(arr[i].getProcessorName());
+            e.add(arr[i].getProcessorPhysicalCores().toString());
+            e.add(arr[i].getProcessorSpeed());
+            e.add(arr[i].getRam());
+            e.add(arr[i].getDiscStorage());
+            e.add(arr[i].getDiscType());
+            e.add(arr[i].getGraphicCardName());
+            e.add(arr[i].getGraphicCardMemory());
+            e.add(arr[i].getOs());
+            e.add(arr[i].getDiscReader());
 
             tableModel.addRow(e);
             System.out.println("wektor e: "  + e.toString());
         }
 
-        System.out.println(arr);
+        //System.out.println(arr);
        // this.resultMan.setText(arr.toString());
 
     }
@@ -341,7 +344,7 @@ public class Main extends JFrame {
         BorderLayout borderLayout = new BorderLayout();
         this.setLayout(new BorderLayout());
 
-
+        fileChooser = new JFileChooser();
         tableModel = new DefaultTableModel();
         tableModel.setColumnIdentifiers(columnHeaders);
         table = new JTable();
@@ -355,12 +358,14 @@ public class Main extends JFrame {
         btnGetCountByMan = new JButton("Zapytaj o ilość laptopów producenta");
         btnGetCountByRes = new JButton("Zapytaj o ilość laptopów po wielkości ekranu");
         btnGetLaptopsByFeatures = new JButton("Pobierz listę laptopów o wybranych cechach");
+        btnSaveToXml = new JButton("Zapisz rekordy z tabelki do XML");
         resultMan = new JLabel("Znaleziono 0 laptopow producenta");
         resultRes = new JLabel("Znaleziono 0 laptopow o wybranej wielkosci ekranu");
 
         btnGetCountByMan.addActionListener(actionEvent -> getCountByMan());
         btnGetCountByRes.addActionListener(actionEvent -> getCountByRes());
         btnGetLaptopsByFeatures.addActionListener(actionEvent -> getLaptopsByFeat());
+        btnSaveToXml.addActionListener(actionEvent -> saveToXml());
 
         labelFirstArea = new JLabel("Wybierz producenta:");
         labelSecondArea = new JLabel("Wybierz wielkosc ekranu:");
@@ -371,15 +376,17 @@ public class Main extends JFrame {
         pnlFirstArea.setLayout(new BoxLayout(pnlFirstArea,BoxLayout.Y_AXIS));
         pnlFirstArea.add(labelFirstArea);
         pnlFirstArea.add(firstArea);
-        pnlFirstArea.add(btnGetCountByMan);
         pnlFirstArea.add(resultMan);
+        pnlFirstArea.add(btnGetCountByMan);
+        pnlFirstArea.add(new JLabel(" "));
 
         pnlSecondArea = new JPanel();
         pnlSecondArea.setLayout(new BoxLayout(pnlSecondArea,BoxLayout.Y_AXIS));
         pnlSecondArea.add(labelSecondArea);
         pnlSecondArea.add(secondArea);
-        pnlSecondArea.add(btnGetCountByRes);
         pnlSecondArea.add(resultRes);
+        pnlSecondArea.add(btnGetCountByRes);
+        pnlSecondArea.add(new JLabel(" "));
 
         pnlThirdArea = new JPanel();
         pnlThirdArea.setLayout(new GridLayout(0,2));
@@ -403,14 +410,14 @@ public class Main extends JFrame {
 
 
         pnlThirdArea.add(btnGetLaptopsByFeatures);
-        pnlThirdArea.add(new JLabel());
+        pnlThirdArea.add(btnSaveToXml);
 
 
         pnlStart = new JPanel(new FlowLayout());
         pnlStart.add(pnlFirstArea);
         pnlStart.add(pnlSecondArea);
         pnlStart.add(pnlThirdArea);
-        pnlStart.add(scrollPane);
+        this.add(scrollPane,BorderLayout.PAGE_END);
         //pnlStart.add();
 
         this.add(pnlStart,BorderLayout.CENTER);
